@@ -1,4 +1,4 @@
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
+var GoogleStrategy = require("passport-google-oauth20").Strategy;
 const passport = require("passport");
 
 passport.use(
@@ -6,20 +6,12 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
-      callbackURL: "/auth/google/callback",
-      scope: ["profile", "email"],
+      callbackURL: "http://localhost:3000/auth/google/callback",
     },
-    function (accessToken, refreshToken, profile, done) {
-      // Use the authenticate method of the passport object
-      passport.authenticate("google", (err, user, info) => {
-        if (err) {
-          return done(err);
-        }
-        if (!user) {
-          return done(null, false, { message: "Not Authorized" });
-        }
-        return done(null, user, info);
-      })(req, res, next);
+    function (accessToken, refreshToken, profile, cb) {
+      User.findOrCreate({ googleId: profile.id }, function (err, user) {
+        return cb(err, user);
+      });
     }
   )
 );

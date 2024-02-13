@@ -6,7 +6,7 @@ const cookieSession = require("cookie-session");
 const app = express();
 
 const authRoute = require("./routes/authgoogle.routes");
-//const passportStrategy = require("./passport");
+const passportStrategy = require("./passport");
 
 app.use(
   cookieSession({
@@ -17,7 +17,7 @@ app.use(
 );
 
 app.use(passport.initialize());
-app.use(passport.session);
+app.use(passport.session());
 
 app.use(
   cors({
